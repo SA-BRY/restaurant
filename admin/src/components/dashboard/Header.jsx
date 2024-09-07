@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Navbar,
-
   Typography,
   Button,
   Menu,
@@ -9,52 +8,37 @@ import {
   MenuList,
   MenuItem,
   Avatar,
-
-
 } from "@material-tailwind/react";
 import {
-
   ChevronDownIcon,
   Cog6ToothIcon,
-  TrashIcon,
   PowerIcon,
-
 } from "@heroicons/react/24/solid";
- 
-/*
-http requests :
-get profile data
-update profile
-delete profile
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { userState } from '../../atoms/userAtom';
 
-
-*/
-
-
-
-
-// profile menu component
+// Profile menu component
 const profileMenuItems = [
-
   {
-    label: "Edit Profile",
+    label: "Profile data",
     icon: Cog6ToothIcon,
   },
-  {
-    label: "Delete profile",
-    icon: TrashIcon,
-  },
-  {
-    label: "Sign Out",
-    icon: PowerIcon,
-  },
 ];
- 
+
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
- 
   const closeMenu = () => setIsMenuOpen(false);
- 
+  const user = useRecoilValue(userState);
+  const setUser = useSetRecoilState(userState);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/auth');
+  };
+
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
@@ -66,53 +50,57 @@ function ProfileMenu() {
           <Avatar
             variant="circular"
             size="sm"
-            alt="tania andrew"
+            alt="User Avatar"
             className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+            src={user.image}
           />
           <ChevronDownIcon
             strokeWidth={2.5}
-            className={`h-3 w-3 transition-transform ${
-              isMenuOpen ? "rotate-180" : ""
-            }`}
+            className={`h-3 w-3 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
           />
         </Button>
       </MenuHandler>
+
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          return (
-            <MenuItem
-              key={label}
-              onClick={closeMenu}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
-              }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-              <Typography
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
-              >
-                {label}
-              </Typography>
-            </MenuItem>
-          );
-        })}
+        {/* User Data Section */}
+        <MenuItem className="flex flex-col items-start gap-1">
+          <Typography as="span" variant="small" className="font-normal">
+           <div className="flex flex-row gap-4">
+            <div>
+            <div className="font-semibold">name :</div>
+            <div>email :</div>
+            <div>phone :</div>
+            </div>
+            <div>
+            <div className="font-semibold">{user.name}</div>
+            <div>{user.email}</div>
+            <div>{user.phone}</div>
+            </div>
+           </div>
+          </Typography>
+        </MenuItem>
+
+        {/* Divider */}
+        <div className="h-px bg-gray-200 my-1" />
+
+        {/* Logout Button */}
+        <MenuItem
+          onClick={() => {
+            closeMenu();
+            handleLogout();
+          }}
+          className="flex items-center gap-2 rounded hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+        >
+          <PowerIcon className="h-4 w-4 text-red-500" strokeWidth={2} />
+          <Typography as="span" variant="small" className="font-normal text-red-500">
+            Sign Out
+          </Typography>
+        </MenuItem>
       </MenuList>
     </Menu>
   );
 }
- 
 
- 
 export default function Header() {
   return (
     <Navbar className="mx-auto max-w-screen-xl p-2 lg:rounded-full lg:pl-6">

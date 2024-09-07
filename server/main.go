@@ -73,6 +73,8 @@ func main() {
 		sub.HandleFunc("POST login", controllers.Login)
 		sub.HandleFunc("PUT update/{id}", controllers.UpdateUser)
 		sub.HandleFunc("DELETE delete/{id}", controllers.DeleteUser)
+		sub.HandleFunc("GET users", controllers.GetAllUsers)
+
 	})
 
 	r.Route("/admin", func(sub *michi.Router) {
@@ -82,6 +84,8 @@ func main() {
 		sub.HandleFunc("PUT update-vendor/{id}", controllers.UpdateVendor)
 		sub.HandleFunc("DELETE delete/{id}", controllers.DeleteVendor)
 		sub.HandleFunc("GET list-vendors", controllers.GetAllVendors)
+		sub.HandleFunc("GET vendor/{id}", controllers.GetVendorById)
+
 	})
 
 	// Enable CORS

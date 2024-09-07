@@ -548,3 +548,41 @@ func GetAllVendors(w http.ResponseWriter, r *http.Request) {
 	// Return the list of vendors
 	utils.SendJSONResponse(w, http.StatusOK, vendors)
 }
+
+func GetVendorById(w http.ResponseWriter, r *http.Request) {
+	// Extract the vendor ID from the URL parameters
+	vendorId := r.PathValue("id")
+
+	// Query to fetch the vendor by joining the users and vendors table
+	query, args, err := QB.Select(
+		"users.id",
+		"users.name",
+		"users.email",
+		"users.phone",
+		"users.img",
+		"users.created_at",
+		"vendors.description").
+		From("users").
+		Join("vendors ON users.id = vendors.vendor_id").
+		Where(squirrel.Eq{"users.id": vendorId}).
+		ToSql()
+
+	if err != nil {
+		utils.HandleError(w, http.StatusInternalServerError, "Internal Server Error")
+		utils.ErrorWithTrace(err, err.Error())
+		return
+	}
+
+	// Struct to hold the vendor data
+	var vendor models.Vendor
+
+	// Execute the query and scan results into the vendor struct
+	if err := db.Get(&vendor, query, args...); err != nil {
+		utils.HandleError(w, http.StatusNotFound, "Vendor not found")
+		utils.ErrorWithTrace(err, err.Error())
+		return
+	}
+
+	// Return the vendor data as JSON
+	utils.SendJSONResponse(w, http.StatusOK, vendor)
+}

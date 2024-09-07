@@ -351,3 +351,23 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		"message": "User deleted successfully",
 	})
 }
+
+func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	var users []models.User
+
+	query, args, err := QB.Select("id", "name", "email", "phone", "img", "created_at", "updated_at").From("users").ToSql()
+
+	if err != nil {
+		utils.HandleError(w, http.StatusInternalServerError, "Failed to create query")
+		log.Fatal(utils.ErrorWithTrace(err, err.Error()))
+		return
+	}
+
+	if err := db.Select(&users, query, args...); err != nil {
+		utils.HandleError(w, http.StatusInternalServerError, "Failed to fetch users")
+		log.Fatal(utils.ErrorWithTrace(err, err.Error()))
+		return
+	}
+
+	utils.SendJSONResponse(w, http.StatusOK, users)
+}

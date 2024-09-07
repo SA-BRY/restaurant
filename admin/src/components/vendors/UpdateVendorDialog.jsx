@@ -13,9 +13,10 @@ import {
 import axios from "axios";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PencilIcon } from "@heroicons/react/24/solid";
-
-
 const API_URL = import.meta.env.VITE_URL;
+
+
+
 
 export default function UpdateVendorDialog({id,refresh}) {
     const vendorID = id

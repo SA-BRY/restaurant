@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import SideBar from '../../components/dashboard/SideBar';
 import Home from '../screens/Home';
 import Vendors from '../screens/Vendors';
+import PreviewVendor from '../../components/vendors/PreviewVendor';
 import Header from '../../components/dashboard/Header';
 import Footer from '../../components/dashboard/Footer';
 
@@ -19,6 +20,8 @@ function Dashboard() {
             {/* Define routes within the dashboard */}
             <Route path="/" element={<Home />} />
             <Route path="/vendors" element={<Vendors />} />
+            <Route path="/vendors/preview/:ID" element={<PreviewVendor/>} />
+
           </Routes>
 
       <Footer />

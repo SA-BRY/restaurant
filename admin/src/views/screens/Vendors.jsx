@@ -1,19 +1,15 @@
 import {
-  MagnifyingGlassIcon,
+
   ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import { TrashIcon } from "@heroicons/react/24/solid";
+import { EyeIcon,TrashIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
-  Input,
   Typography,
   Button,
   CardBody,
   CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
   Avatar,
   IconButton,
   Tooltip,
@@ -27,27 +23,15 @@ import axios from 'axios';
 import AddVendorDialog from "../../components/vendors/AddVendorDialog";
 import UpdateVendorDialog from "../../components/vendors/UpdateVendorDialog";
 import { useEffect, useState } from "react";
-const API_URL = import.meta.env.VITE_URL;
-import { formatDate } from "../../utils/utils"; 
+import { useNavigate } from "react-router-dom";
 
-const TABS = [
-  {
-    label: "All",
-    value: "all",
-  },
-  {
-    label: "Monitored",
-    value: "monitored",
-  },
-  {
-    label: "Unmonitored",
-    value: "unmonitored",
-  },
-];
- 
-const TABLE_HEAD = ["Vendor", "description","phone" , "added at", ""];
+const API_URL = import.meta.env.VITE_URL;
+
+
+const TABLE_HEAD = ["Vendor",  "options"];
 
 export default function Vendors() {
+  const navigate = useNavigate()
   const [vendors, setVendors] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedVendorId, setSelectedVendorId] = useState(null);
@@ -93,6 +77,7 @@ export default function Vendors() {
     GetVendors();
   }, []);
 
+
   return (
     <>
       {/* Delete Confirmation Dialog */}
@@ -107,7 +92,7 @@ export default function Vendors() {
           </Button>
           <Button
             variant="gradient"
-            color="red"
+            color="orange"
             onClick={() => deleteVendor(selectedVendorId)}
           >
             Delete
@@ -125,23 +110,6 @@ export default function Vendors() {
             </div>
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
               <AddVendorDialog refresh={GetVendors} />
-            </div>
-          </div>
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <Tabs value="all" className="w-full md:w-max">
-              <TabsHeader>
-                {TABS.map(({ label, value }) => (
-                  <Tab key={value} value={value}>
-                    &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                  </Tab>
-                ))}
-              </TabsHeader>
-            </Tabs>
-            <div className="w-full md:w-72">
-              <Input
-                label="Search"
-                icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-              />
             </div>
           </div>
         </CardHeader>
@@ -173,7 +141,7 @@ export default function Vendors() {
             </thead>
             <tbody>
               {vendors.map(
-                ({ ID, Img, Name, Email, Description, Phone, created_at }, index) => {
+                ({ ID, Img, Name, Email }, index) => {
                   const isLast = index === vendors.length - 1;
                   const classes = isLast
                     ? "p-4"
@@ -202,39 +170,7 @@ export default function Vendors() {
                           </div>
                         </div>
                       </td>
-                      <td className={classes}>
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {Description}
-                          </Typography>
-                        </div>
-                      </td>
 
-                      <td className={classes}>
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {Phone}
-                          </Typography>
-                        </div>
-                      </td>
-
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {formatDate(created_at)}
-                        </Typography>
-                      </td>
                       <td className={classes}>
                         <Tooltip content="Edit User">
                           <div>
@@ -244,6 +180,13 @@ export default function Vendors() {
                               onClick={() => openDeleteConfirmation(ID)}
                             >
                               <TrashIcon className="h-4 w-4 text-orange-700" />
+                            </IconButton>
+
+                            <IconButton
+                              variant="text"
+                              onClick={() => navigate(`/vendors/preview/${ID}`)}
+                            >
+                              <EyeIcon className="h-4 w-4 text-orange-700" />
                             </IconButton>
                           </div>
                         </Tooltip>
@@ -256,17 +199,6 @@ export default function Vendors() {
           </table>
         </CardBody>
         <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Typography variant="small" color="blue-gray" className="font-normal">
-            Page 1 of 10
-          </Typography>
-          <div className="flex gap-2">
-            <Button variant="outlined" color="orange" size="sm">
-              Previous
-            </Button>
-            <Button variant="outlined" color="orange" size="sm">
-              Next
-            </Button>
-          </div>
         </CardFooter>
       </Card>
     </>

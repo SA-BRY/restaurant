@@ -69,11 +69,11 @@ type OrderItem struct {
 }
 
 type Vendor struct {
-	ID          uuid.UUID `db:"id"`
-	Name        string    `db:"name"`
-	Email       string    `db:"email"`
-	Phone       string    `db:"phone"`
-	Img         string    `db:"img"`
-	Description string    `db:"description"`
+	ID          uuid.UUID `json:"ID" db:"id"`
+	Name        string    `json:"Name" db:"name"`
+	Email       string    `json:"Email" db:"email"`
+	Phone       string    `json:"Phone" db:"phone"`
+	Img         string    `json:"Img" db:"img"`
+	Description string    `json:"Description" db:"description"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
