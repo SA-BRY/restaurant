@@ -1,4 +1,4 @@
-Here's the modified README for your **Sadeem Summer Internship** project, which uses a Go server with PostgreSQL and a React frontend:
+
 
 ---
 
